@@ -195,7 +195,6 @@
         <text class="s2t" x="977" y="190" text-anchor="middle">外部には出さない</text>
         <path class="l2" d="M860,145 L876,145"/>
 
-        <text class="s2t" x="550" y="285" text-anchor="middle">※ 一般情報系PCで使うもの（超勤整理簿など）も、同じ流れで作成・確認してから使います。</text>
       </svg>
     </div>
 
@@ -326,19 +325,17 @@ const WEB_APPS = [
 ];
 
 const PC_PROGRAMS = [
-  { group: "一般情報系PC（Excel VBA）", color: "--c-ippan", items: [
+  { group: "電子カルテPC（Excel VBA）", color: "--c-denkaru", items: [
     { name: "超勤整理簿", img: "overtime", photo: "overtime.png",
       desc: "開始・終了時刻を入れるだけで時間数を自動計算。あとから入力、月替わりの初期化もボタン1つ",
       before: "手書きで記入しており、記入や時間数の計算のエラーが多かった。",
       after: "時刻を入れると時間数が自動で計算され、計算ミスがなくなる。月替わりの消去もボタン1つで済む。",
       how: "Excelに最初から入っているVBA（マクロ）で動く。ボタンを押すと決まった処理を自動で行う。" },
-  ]},
-  { group: "電子カルテPC（Excel VBA）", color: "--c-denkaru", items: [
-    { name: "リハ統計マクロ", img: "stats", photo: "",
-      desc: "電子カルテから出力したCSVを読み込み、月次統計・介入率・委員会資料を自動で集計",
-      before: "複数のCSVやファイルから、毎月手作業で集計・転記していた。時間がかかり、転記ミスも起きやすかった。",
-      after: "ボタン1つで集計表ができあがる。毎月の作業時間が短くなり、転記ミスもなくなる。",
-      how: "電子カルテPCのExcel上で動く。患者データは電子カルテPCの中だけで処理し、外部には出さない。" },
+    { name: "リハ統計マクロ", img: "stats", photo: "stats.png",
+      desc: "電子カルテから出力したデータを貼り付け、対象年月を入れて実行するだけで、脳梗塞患者の3日以内介入率を自動計算",
+      before: "入院日と初回評価日を1件ずつ見比べて日数を数え、手作業で介入率を計算していた。PT・OT・STで重複する患者の整理にも手間がかかっていた。",
+      after: "対象月の患者を自動で抜き出し、職種の重複を整理したうえで介入率を計算する。入院日・初回評価日の入力漏れは「要確認」リストに自動で出る。",
+      how: "電子カルテPCのExcel上で動くVBA。結果は同じファイルの「介入率結果」シートに出力し、外部には出さない。" },
   ]},
   { group: "電子カルテPC（PowerShell）", color: "--c-denkaru", items: [
     { name: "定型文テンプレート・予測変換の共有", img: "template", photo: "template.png",
@@ -346,7 +343,7 @@ const PC_PROGRAMS = [
       before: "評価記録の定型文を、毎回キーボードで入力していた。職員ごとに書き方もばらついていた。",
       after: "数文字入力すると定型文が候補に出る。科内で同じ文面を共有でき、入力時間も短くなる。",
       how: "Windowsに最初から入っているPowerShellと、日本語入力（IME）のユーザー辞書を使う。登録するのは定型文だけで、個人情報は含まない。" },
-    { name: "タスク管理（task_popup）", img: "task", photo: "",
+    { name: "タスク管理（task_popup）", img: "task", photo: "task.png",
       desc: "提出物や定期作業の期限をカウントダウン表示。PC起動時にお知らせ",
       before: "提出物や、決まった曜日に行う作業（データ出力など）を、個人の記憶やメモで管理していた。",
       after: "期限が近いものが色付きで表示され、PC起動時にも知らせてくれるので、うっかり忘れを防げる。",
