@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>リハビリテーション科 業務改善ツール</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --ink: #1f2933;
+    --sub: #5f6b7a;
+    --line: #dde3ea;
+    --accent: #2f6f9f;
+    --c-kensa: #2f6f9f;
+    --c-pt: #1f8a8a;
+    --c-kunren: #3c8d5a;
+    --c-jishu: #b7752a;
+    --c-sonota: #7a5ea8;
+    --c-ippan: #4b7f8c;
+    --c-denkaru: #a3474b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    -webkit-text-size-adjust: 100%; }
+  body { padding: env(safe-area-inset-top) 16px 32px; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header { padding: 20px 4px 12px; }
+  header h1 { margin: 0; font-size: 26px; letter-spacing: .02em; }
+  header p { margin: 6px 0 0; color: var(--sub); font-size: 15px; }
+
+  /* タブ */
+  .tabs { display: flex; gap: 8px; margin: 12px 0 18px; position: sticky; top: 0;
+    background: var(--bg); padding: 8px 0; z-index: 5; }
+  .tab { flex: 1; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    font-size: 17px; font-weight: 600; padding: 14px 10px; border-radius: 12px; cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  section { display: none; }
+  section.active { display: block; }
+
+  h2 { font-size: 19px; margin: 22px 4px 10px; display: flex; align-items: center; gap: 10px; }
+  h2 .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .lead { color: var(--sub); font-size: 15px; margin: 0 4px 12px; line-height: 1.6; }
+
+  /* カード */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 8px;
+    border-top: 5px solid var(--cat, var(--accent)); text-decoration: none; color: inherit; min-height: 138px; }
+  a.card:active { transform: scale(.985); }
+  .card .name { font-size: 18px; font-weight: 700; }
+  .card .desc { font-size: 14.5px; color: var(--sub); line-height: 1.55; flex: 1; }
+  .card .foot { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .chip { padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--cat) 12%, white);
+    color: var(--cat); font-weight: 600; }
+  .open { color: var(--cat); font-weight: 700; }
+  .soon { color: #9aa5b1; font-weight: 600; }
+  .card.disabled { opacity: .72; }
+
+  /* 注意書き */
+  .note { background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--accent);
+    border-radius: 10px; padding: 12px 14px; font-size: 14.5px; line-height: 1.6; margin: 18px 0 0; }
+
+  /* 流れの図 */
+  .flow { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .flow svg { width: 100%; height: auto; display: block; }
+  .steps { margin: 14px 4px 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .steps li { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; font-size: 15px; line-height: 1.6; display: flex; gap: 12px; }
+  .steps .num { flex: 0 0 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+
+
+  .card .shot { margin: -16px -16px 4px; height: 150px; overflow: hidden; background: #eef2f6;
+    border-bottom: 1px solid var(--line); border-radius: 9px 9px 0 0; }
+  .card .shot img { width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block; }
+
+  /* PCプログラム：イメージ図つきカード */
+  .pcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  .pccard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    border-top: 5px solid var(--cat); cursor: pointer; display: flex; flex-direction: column; }
+  .pccard:active { transform: scale(.99); }
+  .pccard .thumb { background: #eef2f6; padding: 12px; border-bottom: 1px solid var(--line); }
+  .pccard .thumb svg { width: 100%; height: auto; display: block; }
+  .pccard .body { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .pccard .name { font-size: 18px; font-weight: 700; }
+  .pccard .desc { font-size: 14.5px; color: var(--sub); line-height: 1.55; }
+  .pccard .more { font-size: 13px; color: var(--cat); font-weight: 700; text-align: right; }
+  .sample { font-size: 12px; color: #9aa5b1; margin: 6px 4px 0; }
+
+  /* 詳細モーダル */
+  .modal { position: fixed; inset: 0; background: rgba(20,30,40,.55); display: none; align-items: center;
+    justify-content: center; padding: 20px; z-index: 50; }
+  .modal.open { display: flex; }
+  .sheet { background: #fff; border-radius: 18px; max-width: 980px; width: 100%; max-height: 92vh; overflow: auto;
+    padding: 20px 22px 22px; position: relative; }
+  .sheet h3 { margin: 0 40px 12px 0; font-size: 22px; }
+  .sheet .big { background: #eef2f6; border-radius: 12px; padding: 14px; }
+  .sheet .big svg { width: 100%; height: auto; display: block; }
+  .ba { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .ba div { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14.5px; line-height: 1.6; }
+  .ba b { display: block; font-size: 13px; margin-bottom: 4px; }
+  .ba .before b { color: #a3474b; } .ba .after b { color: #3c8d5a; } .ba .how b { color: var(--accent); }
+  .close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--line); background: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+  @media (max-width: 760px) { .ba { grid-template-columns: 1fr; } }
+
+  footer { color: var(--sub); font-size: 13px; text-align: center; margin-top: 28px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>リハビリテーション科 業務改善ツール</h1>
+    <p>生成AIを開発支援に使い、現場の職員が作成したツールの一覧です。カードをタップすると開きます。</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="web" aria-selected="true">Webアプリ（iPad）</button>
+    <button class="tab" role="tab" data-tab="pc" aria-selected="false">PCで使うプログラム</button>
+    <button class="tab" role="tab" data-tab="flow" aria-selected="false">作成・導入の流れ</button>
+  </nav>
+
+  <!-- ① Webアプリ -->
+  <section id="web" class="active">
+    <p class="lead">一般情報系のWebアプリです。iPadのブラウザで動き、個人情報は入力・保存しません。</p>
+    <div id="web-groups"></div>
+    <div class="note">検査の補助アプリは、療法士が行う検査の<b>計測・集計・計算・記録の補助</b>に限ります。診断機能は持たず、臨床判断は療法士が行います。検査の問題文や図版などの著作物は掲載していません。</div>
+  </section>
+
+  <!-- ② PCプログラム -->
+  <section id="pc">
+    <p class="lead">Excel VBAとPowerShellで作ったプログラムです。どちらもWindowsとExcelに最初から入っている機能で動き、新しいソフトのインストールは不要です。カードをタップすると、イメージ図と説明が大きく開きます。</p>
+
+    <h2><span class="dot" style="background:var(--c-denkaru)"></span>作成から利用までの流れ</h2>
+    <div class="flow">
+      <svg viewBox="0 0 1100 300" role="img" aria-label="PCで使うプログラムの作成から利用までの流れ">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5f6b7a"/>
+          </marker>
+        </defs>
+        <style>
+          .b2 { fill: #fff; stroke: #c9d2dc; stroke-width: 2; }
+          .h2t { font: 700 18px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #1f2933; }
+          .s2t { font: 14px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #5f6b7a; }
+          .l2 { stroke: #5f6b7a; stroke-width: 2.5; fill: none; marker-end: url(#ar2); }
+          .z2 { fill: #fbeeee; stroke: #a3474b; stroke-width: 2; stroke-dasharray: 8 6; }
+          .z1 { fill: #edf4f6; stroke: #4b7f8c; stroke-width: 2; stroke-dasharray: 8 6; }
+          .zl { font: 700 14px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; }
+        </style>
+        <rect class="z1" x="10" y="20" width="420" height="230" rx="16"/>
+        <text class="zl" x="220" y="44" text-anchor="middle" fill="#4b7f8c">インターネットにつながるPC（患者データなし）</text>
+        <rect class="z2" x="650" y="20" width="440" height="230" rx="16"/>
+        <text class="zl" x="870" y="44" text-anchor="middle" fill="#a3474b">電子カルテPCの中だけ</text>
+
+        <rect class="b2" x="25" y="70" width="185" height="150" rx="14"/>
+        <text class="h2t" x="117" y="112" text-anchor="middle">① 作る</text>
+        <text class="s2t" x="117" y="140" text-anchor="middle">生成AIと対話して</text>
+        <text class="s2t" x="117" y="160" text-anchor="middle">プログラムを作成</text>
+        <text class="s2t" x="117" y="190" text-anchor="middle">処理内容の説明だけ</text>
+        <text class="s2t" x="117" y="208" text-anchor="middle">（データは使わない）</text>
+
+        <rect class="b2" x="232" y="70" width="185" height="150" rx="14"/>
+        <text class="h2t" x="324" y="112" text-anchor="middle">② 確認する</text>
+        <text class="s2t" x="324" y="140" text-anchor="middle">個人情報が</text>
+        <text class="s2t" x="324" y="160" text-anchor="middle">入っていない</text>
+        <text class="s2t" x="324" y="190" text-anchor="middle">外部と通信する</text>
+        <text class="s2t" x="324" y="208" text-anchor="middle">命令がない</text>
+        <path class="l2" d="M210,145 L228,145"/>
+
+        <rect class="b2" x="455" y="90" width="165" height="110" rx="14"/>
+        <text class="h2t" x="537" y="132" text-anchor="middle">③ 運ぶ</text>
+        <text class="s2t" x="537" y="160" text-anchor="middle">USBメモリで</text>
+        <text class="s2t" x="537" y="180" text-anchor="middle">ファイルを運ぶ</text>
+        <path class="l2" d="M417,145 L451,145"/>
+
+        <rect class="b2" x="665" y="70" width="195" height="150" rx="14"/>
+        <text class="h2t" x="762" y="112" text-anchor="middle">④ 入れる</text>
+        <text class="s2t" x="762" y="140" text-anchor="middle">Excelに貼り付け</text>
+        <text class="s2t" x="762" y="160" text-anchor="middle">／.batをダブルクリック</text>
+        <text class="s2t" x="762" y="190" text-anchor="middle">インストール不要</text>
+        <path class="l2" d="M620,145 L661,145"/>
+
+        <rect class="b2" x="880" y="70" width="195" height="150" rx="14"/>
+        <text class="h2t" x="977" y="112" text-anchor="middle">⑤ 使う</text>
+        <text class="s2t" x="977" y="140" text-anchor="middle">院内のデータを</text>
+        <text class="s2t" x="977" y="160" text-anchor="middle">その場で処理</text>
+        <text class="s2t" x="977" y="190" text-anchor="middle">外部には出さない</text>
+        <path class="l2" d="M860,145 L876,145"/>
+
+        <text class="s2t" x="550" y="285" text-anchor="middle">※ 一般情報系PCで使うもの（超勤整理簿など）も、同じ流れで作成・確認してから使います。</text>
+      </svg>
+    </div>
+
+    <div id="pc-groups"></div>
+    <p class="sample">※ 図の数値・文言は説明用のサンプル、または個人情報を含まない画面です。</p>
+    <div class="note">電子カルテPCで使うプログラムは、USBメモリで運んで使います。患者データは電子カルテPCの中だけで扱い、外部には出しません。</div>
+  </section>
+
+  <!-- ③ 流れ -->
+  <section id="flow">
+    <p class="lead">生成AIは「プログラムを作る手伝い」にだけ使います。院内のデータはAIに入力しません。</p>
+    <div class="flow">
+      <svg viewBox="0 0 1100 430" role="img" aria-label="作成・導入の流れの図">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5f6b7a"/>
+          </marker>
+        </defs>
+        <style>
+          .bx { fill: #fff; stroke: #c9d2dc; stroke-width: 2; rx: 14; }
+          .t1 { font: 700 20px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #1f2933; }
+          .t2 { font: 15px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #5f6b7a; }
+          .ln { stroke: #5f6b7a; stroke-width: 2.5; fill: none; marker-end: url(#ar); }
+          .zone { fill: #fbeeee; stroke: #a3474b; stroke-width: 2; stroke-dasharray: 8 6; rx: 16; }
+          .zt { font: 700 15px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #a3474b; }
+        </style>
+
+        <!-- 1 作る -->
+        <rect class="bx" x="20" y="150" width="220" height="120"/>
+        <text class="t1" x="130" y="198" text-anchor="middle">① プログラムを作る</text>
+        <text class="t2" x="130" y="226" text-anchor="middle">生成AIは作成の手伝いだけ</text>
+        <text class="t2" x="130" y="248" text-anchor="middle">院内データは入力しない</text>
+
+        <!-- 2 確認 -->
+        <rect class="bx" x="300" y="150" width="220" height="120"/>
+        <text class="t1" x="410" y="198" text-anchor="middle">② 中身を確認</text>
+        <text class="t2" x="410" y="226" text-anchor="middle">個人情報が入っていない</text>
+        <text class="t2" x="410" y="248" text-anchor="middle">外部と通信しない</text>
+        <path class="ln" d="M240,210 L296,210"/>
+
+        <!-- 3a Web -->
+        <rect class="bx" x="590" y="30" width="230" height="110"/>
+        <text class="t1" x="705" y="74" text-anchor="middle">③ GitHub Pagesで公開</text>
+        <text class="t2" x="705" y="102" text-anchor="middle">Webアプリ</text>
+        <text class="t2" x="705" y="122" text-anchor="middle">（個人情報を扱わない）</text>
+        <path class="ln" d="M520,190 C555,190 555,85 586,85"/>
+        <rect class="bx" x="870" y="30" width="210" height="110"/>
+        <text class="t1" x="975" y="80" text-anchor="middle">iPadのブラウザ</text>
+        <text class="t2" x="975" y="108" text-anchor="middle">で使う</text>
+        <path class="ln" d="M820,85 L866,85"/>
+
+        <!-- 3b USB -->
+        <rect class="bx" x="590" y="250" width="230" height="110"/>
+        <text class="t1" x="705" y="294" text-anchor="middle">③ USBメモリで運ぶ</text>
+        <text class="t2" x="705" y="322" text-anchor="middle">Excel VBA・PowerShell</text>
+        <text class="t2" x="705" y="342" text-anchor="middle">インストール不要</text>
+        <path class="ln" d="M520,230 C555,230 555,305 586,305"/>
+
+        <!-- 電カルゾーン -->
+        <rect class="zone" x="855" y="215" width="235" height="200"/>
+        <text class="zt" x="972" y="242" text-anchor="middle">電子カルテPCの中だけ</text>
+        <rect class="bx" x="875" y="255" width="195" height="105"/>
+        <text class="t1" x="972" y="298" text-anchor="middle">④ 患者データを</text>
+        <text class="t1" x="972" y="326" text-anchor="middle">ここで処理</text>
+        <text class="t2" x="972" y="392" text-anchor="middle">外部には出さない</text>
+        <path class="ln" d="M820,305 L871,305"/>
+      </svg>
+    </div>
+    <ol class="steps">
+      <li><span class="num">1</span><span>生成AIは、プログラムの設計・作成の手伝いにだけ使います。患者情報や業務データそのものは入力せず、処理内容の説明だけで作ります。</span></li>
+      <li><span class="num">2</span><span>できあがったプログラムに個人情報が入っていないこと、外部と通信する処理がないことを確認します。</span></li>
+      <li><span class="num">3</span><span>WebアプリはGitHub Pagesで公開し、iPadのブラウザで使います。PCで使うプログラムはUSBメモリで運び、最初から入っているExcelとWindowsの機能で動かします。</span></li>
+      <li><span class="num">4</span><span>患者データは電子カルテPCの中だけで扱い、外部には出しません。</span></li>
+    </ol>
+  </section>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <button class="close" id="close" aria-label="閉じる">×</button>
+      <h3 id="m-title"></h3>
+      <div class="big" id="m-img"></div>
+      <div class="ba">
+        <div class="before"><b>導入前</b><span id="m-before"></span></div>
+        <div class="after"><b>導入後</b><span id="m-after"></span></div>
+        <div class="how"><b>しくみ</b><span id="m-how"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>本ページおよび各ツールは個人情報を入力・保存しない設計です。<br>リハビリテーション科</footer>
+</div>
+
+<script>
+/* ===== ここだけ書き換えればOK =====
+   url:   アプリのアドレス（https://〜）を "" の中に入れる。
+          空のままだと「準備中」と表示され、タップしても開きません。
+   photo: 画面の画像を出したいときは、photo: "images/ファイル名.png" を足す。
+          画像は images フォルダに入れておく。 */
+const WEB_APPS = [
+  { group: "認知・高次脳機能検査（補助）", color: "--c-kensa", items: [
+    { name: "MMSE",          desc: "認知機能スクリーニング検査の得点入力・採点計算・合計の集計", url: "" },
+    { name: "KOHS",          desc: "コース立方体組み合わせテストの時間計測と得点集計", url: "" },
+    { name: "TMT",           desc: "Trail Making Test（A・B）の所要時間の計測と、年代別基準値との比較計算", url: "" },
+    { name: "FAB",           desc: "前頭葉機能検査の時間計測・記録・得点集計", url: "" },
+    { name: "無視検査",       desc: "半側空間無視スクリーニングの記録・集計の補助", url: "" },
+  ]},
+  { group: "PT検査（補助）", color: "--c-pt", items: [
+    { name: "6分間歩行検査",  desc: "時間計測、周回カウント、バイタル・Borgスケールの記録", url: "" },
+  ]},
+  { group: "訓練", color: "--c-kunren", items: [
+    { name: "口腔器官の運動訓練", desc: "口唇・舌・頬の運動を動画で見ながら、鏡のように確認", url: "" },
+    { name: "記名力訓練",     desc: "記憶・再認のトレーニング", url: "" },
+    { name: "Stroop訓練",    desc: "色×文字・位置×文字の干渉課題", url: "" },
+    { name: "助詞訓練",       desc: "助詞・文法のトレーニング", url: "" },
+    { name: "計算訓練",       desc: "計算課題のトレーニング", url: "" },
+    { name: "無視訓練",       desc: "半側空間無視のリハビリ課題", url: "" },
+    { name: "数字探索訓練",   desc: "視覚探索・注意の訓練", url: "" },
+    { name: "受動的注意訓練", desc: "注意機能のトレーニング", url: "" },
+    { name: "メンタルローテーション", desc: "図形の心的回転の訓練", url: "" },
+  ]},
+  { group: "自主トレ", color: "--c-jishu", items: [
+    { name: "自主トレメニュー", desc: "PT/OT向けの自主トレーニング。動画つきの運動カード", url: "" },
+  ]},
+  { group: "その他", color: "--c-sonota", items: [
+    { name: "モザイクスタンプ",   desc: "撮影前にモザイクをかけ、加工前の画像を残さない", url: "" },
+    { name: "休日勤務 希望収集",  desc: "希望を集め、公平に配慮して自動で割り当て", url: "", photo: "images/shift.png" },
+  ]},
+];
+
+const PC_PROGRAMS = [
+  { group: "一般情報系PC（Excel VBA）", color: "--c-ippan", items: [
+    { name: "超勤整理簿", img: "overtime", photo: "images/overtime.png",
+      desc: "開始・終了時刻を入れるだけで時間数を自動計算。あとから入力、月替わりの初期化もボタン1つ",
+      before: "手書きで記入しており、記入や時間数の計算のエラーが多かった。",
+      after: "時刻を入れると時間数が自動で計算され、計算ミスがなくなる。月替わりの消去もボタン1つで済む。",
+      how: "Excelに最初から入っているVBA（マクロ）で動く。ボタンを押すと決まった処理を自動で行う。" },
+  ]},
+  { group: "電子カルテPC（Excel VBA）", color: "--c-denkaru", items: [
+    { name: "リハ統計マクロ", img: "stats", photo: "",
+      desc: "電子カルテから出力したCSVを読み込み、月次統計・介入率・委員会資料を自動で集計",
+      before: "複数のCSVやファイルから、毎月手作業で集計・転記していた。時間がかかり、転記ミスも起きやすかった。",
+      after: "ボタン1つで集計表ができあがる。毎月の作業時間が短くなり、転記ミスもなくなる。",
+      how: "電子カルテPCのExcel上で動く。患者データは電子カルテPCの中だけで処理し、外部には出さない。" },
+  ]},
+  { group: "電子カルテPC（PowerShell）", color: "--c-denkaru", items: [
+    { name: "定型文テンプレート・予測変換の共有", img: "template", photo: "images/template.png",
+      desc: "評価文の定型文を、院内PCの予測変換にまとめて登録。長文はクリップボードから貼り付け",
+      before: "評価記録の定型文を、毎回キーボードで入力していた。職員ごとに書き方もばらついていた。",
+      after: "数文字入力すると定型文が候補に出る。科内で同じ文面を共有でき、入力時間も短くなる。",
+      how: "Windowsに最初から入っているPowerShellと、日本語入力（IME）のユーザー辞書を使う。登録するのは定型文だけで、個人情報は含まない。" },
+    { name: "タスク管理（task_popup）", img: "task", photo: "",
+      desc: "提出物や定期作業の期限をカウントダウン表示。PC起動時にお知らせ",
+      before: "提出物や、決まった曜日に行う作業（データ出力など）を、個人の記憶やメモで管理していた。",
+      after: "期限が近いものが色付きで表示され、PC起動時にも知らせてくれるので、うっかり忘れを防げる。",
+      how: "PowerShellで動く小さな画面。データはPCのドキュメントフォルダ内にだけ保存する。" },
+  ]},
+];
+/* ===== 書き換えはここまで ===== */
+
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function render(targetId, groups, isLink) {
+  const box = document.getElementById(targetId);
+  groups.forEach(g => {
+    const color = cssVar(g.color);
+    const h = document.createElement("h2");
+    h.innerHTML = `<span class="dot" style="background:${color}"></span>${g.group}`;
+    box.appendChild(h);
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    g.items.forEach(it => {
+      const ready = isLink && it.url;
+      const el = document.createElement(ready ? "a" : "div");
+      el.className = "card" + (isLink && !ready ? " disabled" : "");
+      el.style.setProperty("--cat", color);
+      if (ready) { el.href = it.url; el.target = "_blank"; el.rel = "noopener"; }
+      const footRight = !isLink ? "" : (ready ? '<span class="open">開く ›</span>' : '<span class="soon">準備中</span>');
+      el.innerHTML =
+        (it.photo ? `<div class="shot"><img src="${it.photo}" alt="${it.name}の画面" loading="lazy"></div>` : "") +
+        `<div class="name">${it.name}</div>` +
+        `<div class="desc">${it.desc}</div>` +
+        `<div class="foot"><span class="chip">${g.group.replace(/（.*）/, "")}</span>${footRight}</div>`;
+      grid.appendChild(el);
+    });
+    box.appendChild(grid);
+  });
+}
+
+render("web-groups", WEB_APPS, true);
+/* ---- イメージ図（すべて説明用のサンプル） ---- */
+const F = 'font-family="-apple-system, Hiragino Sans, Meiryo, sans-serif"';
+const MOCKS = {
+  overtime: `<svg viewBox="0 0 420 250" ${F}>
+    <rect x="0" y="0" width="420" height="250" rx="10" fill="#fff" stroke="#c9d2dc"/>
+    <rect x="0" y="0" width="420" height="30" rx="10" fill="#217346"/><rect x="0" y="20" width="420" height="10" fill="#217346"/>
+    <text x="14" y="20" font-size="13" fill="#fff" font-weight="700">超勤整理簿.xlsm</text>
+    <rect x="14" y="40" width="110" height="28" rx="6" fill="#2f6f9f"/><text x="69" y="59" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">あとから入力</text>
+    <rect x="132" y="40" width="130" height="28" rx="6" fill="#7a8794"/><text x="197" y="59" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">月初めの初期化</text>
+    <g font-size="13">
+      <rect x="14" y="80" width="392" height="26" fill="#e8eef3"/>
+      <text x="30" y="98" font-weight="700">日付</text><text x="120" y="98" font-weight="700">開始</text><text x="210" y="98" font-weight="700">終了</text><text x="300" y="98" font-weight="700">時間数</text>
+      <text x="30" y="128">10/1</text><text x="120" y="128">17:30</text><text x="210" y="128">18:45</text>
+      <text x="30" y="156">10/3</text><text x="120" y="156">17:15</text><text x="210" y="156">18:00</text>
+      <text x="30" y="184">10/8</text><text x="120" y="184">17:30</text><text x="210" y="184">19:00</text>
+      <rect x="290" y="110" width="116" height="84" fill="#e9f5ee"/>
+      <text x="300" y="128" fill="#2c7a4b" font-weight="700">1:15</text>
+      <text x="300" y="156" fill="#2c7a4b" font-weight="700">0:45</text>
+      <text x="300" y="184" fill="#2c7a4b" font-weight="700">1:30</text>
+      <line x1="14" y1="138" x2="406" y2="138" stroke="#e3e8ee"/><line x1="14" y1="166" x2="406" y2="166" stroke="#e3e8ee"/><line x1="14" y1="194" x2="406" y2="194" stroke="#e3e8ee"/>
+    </g>
+    <rect x="262" y="206" width="144" height="26" rx="13" fill="#2c7a4b"/>
+    <text x="334" y="224" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">時間数は自動計算</text>
+  </svg>`,
+  stats: `<svg viewBox="0 0 420 250" ${F}>
+    <rect x="0" y="0" width="420" height="250" rx="10" fill="#fff" stroke="#c9d2dc"/>
+    <g font-size="12" text-anchor="middle">
+      ${[0,1,2].map(k=>`<g transform="translate(${18+k*10},${40+k*18})"><path d="M0,0 h52 l14,14 v62 h-66 z" fill="#fff" stroke="#7a8794" stroke-width="1.5"/><path d="M52,0 v14 h14" fill="none" stroke="#7a8794" stroke-width="1.5"/><text x="33" y="48" fill="#5f6b7a" font-weight="700">CSV</text></g>`).join("")}
+      <text x="62" y="172" fill="#5f6b7a">電子カルテから</text><text x="62" y="188" fill="#5f6b7a">出力したデータ</text>
+    </g>
+    <path d="M116,100 L144,100" stroke="#5f6b7a" stroke-width="2.5"/><path d="M142,94 L152,100 L142,106 z" fill="#5f6b7a"/>
+    <rect x="156" y="82" width="72" height="36" rx="8" fill="#a3474b"/>
+    <text x="192" y="105" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">集計</text>
+    <path d="M230,100 L250,100" stroke="#5f6b7a" stroke-width="2.5"/><path d="M248,94 L258,100 L248,106 z" fill="#5f6b7a"/>
+    <g font-size="12">
+      <rect x="262" y="30" width="146" height="200" rx="8" fill="#fff" stroke="#c9d2dc"/>
+      <text x="335" y="50" text-anchor="middle" font-weight="700" font-size="13">月次統計（サンプル）</text>
+      <rect x="270" y="58" width="130" height="20" fill="#e8eef3"/>
+      <text x="276" y="72" font-weight="700">項目</text><text x="392" y="72" text-anchor="end" font-weight="700">値</text>
+      <text x="276" y="96">PT 単位数</text><text x="392" y="96" text-anchor="end">1,234</text>
+      <text x="276" y="120">OT 単位数</text><text x="392" y="120" text-anchor="end">987</text>
+      <text x="276" y="144">ST 単位数</text><text x="392" y="144" text-anchor="end">654</text>
+      <text x="276" y="168">3日以内介入率</text><text x="392" y="168" text-anchor="end">90%</text>
+      <text x="276" y="192">委員会資料</text><text x="392" y="192" text-anchor="end" fill="#2c7a4b" font-weight="700">作成済</text>
+    </g>
+  </svg>`,
+  template: `<svg viewBox="0 0 420 250" ${F}>
+    <rect x="0" y="0" width="420" height="250" rx="10" fill="#fff" stroke="#c9d2dc"/>
+    <text x="16" y="28" font-size="13" fill="#5f6b7a" font-weight="700">記録の入力欄（イメージ）</text>
+    <rect x="16" y="38" width="388" height="34" rx="6" fill="#fff" stroke="#7a8794"/>
+    <text x="26" y="60" font-size="14">評価：</text>
+    <text x="70" y="60" font-size="14" fill="#2f6f9f" text-decoration="underline">ひょうか</text>
+    <rect x="66" y="76" width="320" height="104" rx="6" fill="#fff" stroke="#c9d2dc"/>
+    <rect x="67" y="77" width="318" height="26" fill="#dbe8f3"/>
+    <g font-size="13">
+      <text x="78" y="95">1  初回評価を実施した。全体像として…</text>
+      <text x="78" y="121">2  再評価を実施した。前回と比べて…</text>
+      <text x="78" y="147">3  退院時評価を実施した。…</text>
+      <text x="78" y="171" fill="#9aa5b1">4  評価</text>
+    </g>
+    <rect x="16" y="192" width="388" height="44" rx="8" fill="#f6f8fa" stroke="#e3e8ee"/>
+    <text x="26" y="218" font-size="12" fill="#5f6b7a">長文テンプレ：</text>
+    <g font-size="12" font-weight="700" fill="#fff" text-anchor="middle">
+      <rect x="112" y="201" width="80" height="26" rx="6" fill="#a3474b"/><text x="152" y="219">初回評価</text>
+      <rect x="200" y="201" width="80" height="26" rx="6" fill="#a3474b"/><text x="240" y="219">退院時</text>
+      <rect x="288" y="201" width="104" height="26" rx="6" fill="#7a8794"/><text x="340" y="219">コピーして貼付</text>
+    </g>
+  </svg>`,
+  task: `<svg viewBox="0 0 420 250" ${F}>
+    <rect x="0" y="0" width="420" height="250" rx="10" fill="#fff" stroke="#c9d2dc"/>
+    <rect x="0" y="0" width="420" height="30" rx="10" fill="#3b4b5c"/><rect x="0" y="20" width="420" height="10" fill="#3b4b5c"/>
+    <text x="14" y="20" font-size="13" fill="#fff" font-weight="700">タスク管理</text>
+    <g font-size="13">
+      <rect x="14" y="44" width="236" height="44" rx="8" fill="#fbeeee" stroke="#e6c3c5"/>
+      <text x="26" y="64" font-weight="700">月次統計の提出</text><text x="26" y="80" font-size="11" fill="#5f6b7a">期限 10/17</text>
+      <rect x="182" y="54" width="58" height="24" rx="12" fill="#a3474b"/><text x="211" y="71" fill="#fff" text-anchor="middle" font-weight="700">あと2日</text>
+      <rect x="14" y="96" width="236" height="44" rx="8" fill="#fff6e8" stroke="#ecd2a8"/>
+      <text x="26" y="116" font-weight="700">データ出力（毎週月曜）</text><text x="26" y="132" font-size="11" fill="#5f6b7a">定期</text>
+      <rect x="182" y="106" width="58" height="24" rx="12" fill="#b7752a"/><text x="211" y="123" fill="#fff" text-anchor="middle" font-weight="700">今日</text>
+      <rect x="14" y="148" width="236" height="44" rx="8" fill="#fff" stroke="#e3e8ee"/>
+      <text x="26" y="168" font-weight="700">会議資料の作成</text><text x="26" y="184" font-size="11" fill="#5f6b7a">期限 10/24</text>
+      <rect x="182" y="158" width="58" height="24" rx="12" fill="#7a8794"/><text x="211" y="175" fill="#fff" text-anchor="middle" font-weight="700">あと9日</text>
+    </g>
+    <g font-size="10" text-anchor="middle" fill="#5f6b7a">
+      <rect x="264" y="44" width="142" height="148" rx="8" fill="#fff" stroke="#e3e8ee"/>
+      <text x="335" y="62" font-size="12" font-weight="700" fill="#1f2933">10月</text>
+      ${Array.from({length:28},(_,n)=>{const c=n%7,r=Math.floor(n/7);const d=n+1;const x=280+c*19,y=84+r*26;
+        const mark=[15,17,24].includes(d+2)?`<circle cx="${x}" cy="${y+8}" r="2.5" fill="#a3474b"/>`:"";
+        return `<text x="${x}" y="${y}">${d+2}</text>${mark}`}).join("")}
+    </g>
+    <rect x="14" y="204" width="392" height="32" rx="8" fill="#e8eef3"/>
+    <text x="210" y="225" font-size="12" text-anchor="middle" fill="#3b4b5c">PC起動時に「期限が近いタスクがあります」とお知らせ</text>
+  </svg>`,
+};
+
+/* photo に画像ファイル名が入っていれば実際のスクリーンショット、空ならイメージ図を表示 */
+function picture(it) {
+  return it.photo
+    ? `<img src="${it.photo}" alt="${it.name}の画面" style="width:100%;height:auto;display:block;border-radius:8px;background:#fff">`
+    : MOCKS[it.img];
+}
+
+function renderPC(groups) {
+  const box = document.getElementById("pc-groups");
+  groups.forEach(g => {
+    const color = cssVar(g.color);
+    const h = document.createElement("h2");
+    h.innerHTML = `<span class="dot" style="background:${color}"></span>${g.group}`;
+    box.appendChild(h);
+    const grid = document.createElement("div");
+    grid.className = "pcgrid";
+    g.items.forEach(it => {
+      const el = document.createElement("div");
+      el.className = "pccard";
+      el.style.setProperty("--cat", color);
+      el.innerHTML =
+        `<div class="thumb">${picture(it)}</div>` +
+        `<div class="body"><div class="name">${it.name}</div><div class="desc">${it.desc}</div>` +
+        `<div class="more">タップで詳しく ›</div></div>`;
+      el.addEventListener("click", () => openModal(it));
+      grid.appendChild(el);
+    });
+    box.appendChild(grid);
+  });
+}
+
+const modal = document.getElementById("modal");
+function openModal(it) {
+  document.getElementById("m-title").textContent = it.name;
+  document.getElementById("m-img").innerHTML = picture(it);
+  document.getElementById("m-before").textContent = it.before;
+  document.getElementById("m-after").textContent = it.after;
+  document.getElementById("m-how").textContent = it.how;
+  modal.classList.add("open");
+}
+document.getElementById("close").addEventListener("click", () => modal.classList.remove("open"));
+modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
+
+renderPC(PC_PROGRAMS);
+
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b === btn));
+    document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === btn.dataset.tab));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+</script>
+</body>
+</html>
