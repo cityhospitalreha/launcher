@@ -292,36 +292,36 @@
 /* ===== ここだけ書き換えればOK =====
    url:   アプリのアドレス（https://〜）を "" の中に入れる。
           空のままだと「準備中」と表示され、タップしても開きません。
-   photo: 画面の画像を出したいときは、photo: "images/ファイル名.png" を足す。
-          画像は images フォルダに入れておく。 */
+   photo: 画面の画像を出したいときは、photo: "ファイル名.png" を足す。
+          画像は index.html と同じ場所に置いておく。 */
 const WEB_APPS = [
   { group: "認知・高次脳機能検査（補助）", color: "--c-kensa", items: [
-    { name: "MMSE",          desc: "認知機能スクリーニング検査の得点入力・採点計算・合計の集計", url: "" },
-    { name: "KOHS",          desc: "コース立方体組み合わせテストの時間計測と得点集計", url: "" },
-    { name: "TMT",           desc: "Trail Making Test（A・B）の所要時間の計測と、年代別基準値との比較計算", url: "" },
-    { name: "FAB",           desc: "前頭葉機能検査の時間計測・記録・得点集計", url: "" },
-    { name: "無視検査",       desc: "半側空間無視スクリーニングの記録・集計の補助", url: "" },
+    { name: "MMSE",          desc: "認知機能スクリーニング検査の得点入力・採点計算・合計の集計", url: "https://cityhospitalreha.github.io/mmse/" },
+    { name: "KOHS",          desc: "コース立方体組み合わせテストの時間計測と得点集計", url: "https://cityhospitalreha.github.io/kohs/" },
+    { name: "TMT",           desc: "Trail Making Test（A・B）の所要時間の計測と、年代別基準値との比較計算", url: "https://cityhospitalreha.github.io/TMT/" },
+    { name: "FAB",           desc: "前頭葉機能検査の時間計測・記録・得点集計", url: "https://cityhospitalreha.github.io/fab/" },
+    { name: "無視検査",       desc: "半側空間無視スクリーニングの記録・集計の補助", url: "https://cityhospitalreha.github.io/neglect/" },
   ]},
   { group: "PT検査（補助）", color: "--c-pt", items: [
-    { name: "6分間歩行検査",  desc: "時間計測、周回カウント、バイタル・Borgスケールの記録", url: "" },
+    { name: "6分間歩行検査",  desc: "時間計測、周回カウント、バイタル・Borgスケールの記録", url: "https://cityhospitalreha.github.io/6minutes/" },
   ]},
   { group: "訓練", color: "--c-kunren", items: [
-    { name: "口腔器官の運動訓練", desc: "口唇・舌・頬の運動を動画で見ながら、鏡のように確認", url: "" },
-    { name: "記名力訓練",     desc: "記憶・再認のトレーニング", url: "" },
-    { name: "Stroop訓練",    desc: "色×文字・位置×文字の干渉課題", url: "" },
-    { name: "助詞訓練",       desc: "助詞・文法のトレーニング", url: "" },
-    { name: "計算訓練",       desc: "計算課題のトレーニング", url: "" },
-    { name: "無視訓練",       desc: "半側空間無視のリハビリ課題", url: "" },
-    { name: "数字探索訓練",   desc: "視覚探索・注意の訓練", url: "" },
-    { name: "受動的注意訓練", desc: "注意機能のトレーニング", url: "" },
-    { name: "メンタルローテーション", desc: "図形の心的回転の訓練", url: "" },
+    { name: "口腔器官の運動訓練", desc: "口唇・舌・頬の運動を動画で見ながら、鏡のように確認", url: "https://cityhospitalreha.github.io/-/" },
+    { name: "記名力訓練",     desc: "記憶・再認のトレーニング", url: "https://cityhospitalreha.github.io/kimei/" },
+    { name: "Stroop訓練",    desc: "色×文字・位置×文字の干渉課題", url: "https://cityhospitalreha.github.io/stroop/" },
+    { name: "助詞訓練",       desc: "助詞・文法のトレーニング", url: "https://cityhospitalreha.github.io/josi/" },
+    { name: "計算訓練",       desc: "計算課題のトレーニング", url: "https://cityhospitalreha.github.io/keisan/" },
+    { name: "無視訓練",       desc: "半側空間無視のリハビリ課題", url: "https://cityhospitalreha.github.io/USN/" },
+    { name: "数字探索訓練",   desc: "視覚探索・注意の訓練", url: "https://cityhospitalreha.github.io/suujisagasi/" },
+    { name: "受動的注意訓練", desc: "注意機能のトレーニング", url: "https://cityhospitalreha.github.io/judouteki/" },
+    { name: "メンタルローテーション", desc: "図形の心的回転の訓練", url: "https://cityhospitalreha.github.io/mentalrotation/" },
   ]},
   { group: "自主トレ", color: "--c-jishu", items: [
-    { name: "自主トレメニュー", desc: "PT/OT向けの自主トレーニング。動画つきの運動カード", url: "" },
+    { name: "自主トレメニュー", desc: "PT/OT向けの自主トレーニング。動画つきの運動カード", url: "https://cityhospitalreha.github.io/PT/" },
   ]},
   { group: "その他", color: "--c-sonota", items: [
-    { name: "モザイクスタンプ",   desc: "撮影前にモザイクをかけ、加工前の画像を残さない", url: "" },
-    { name: "休日勤務 希望収集",  desc: "希望を集め、公平に配慮して自動で割り当て", url: "", photo: "shift.png" },
+    { name: "モザイクスタンプ",   desc: "撮影前にモザイクをかけ、加工前の画像を残さない", url: "https://cityhospitalreha.github.io/camera/" },
+    { name: "休日勤務 希望収集",  desc: "希望を集め、公平に配慮して自動で割り当て", url: "https://cityhospitalreha.github.io/shift-/", photo: "shift.png" },
   ]},
 ];
 
