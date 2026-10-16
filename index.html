@@ -110,6 +110,19 @@
     border: 1px solid var(--line); background: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
   @media (max-width: 760px) { .ba { grid-template-columns: 1fr; } }
 
+
+  /* Webアプリのしくみ・作り方・注意点 */
+  .sys { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sysbox { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+    border-top: 5px solid var(--c); }
+  .sysbox h3 { margin: 0 0 6px; font-size: 17px; color: var(--c); }
+  .sysbox .who { font-size: 13px; color: var(--sub); margin-bottom: 8px; }
+  .sysbox svg { width: 100%; height: auto; display: block; margin: 4px 0 8px; }
+  .sysbox ul, .warn ul { margin: 0; padding-left: 1.2em; font-size: 14.5px; line-height: 1.65; }
+  .warn { background: #fff8ec; border: 1px solid #ecd3a8; border-left: 5px solid var(--c-jishu);
+    border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
+  .warn b.t { display: block; color: #8a5a1c; margin-bottom: 4px; }
+  @media (max-width: 760px) { .sys { grid-template-columns: 1fr; } }
   footer { color: var(--sub); font-size: 13px; text-align: center; margin-top: 28px; line-height: 1.6; }
 </style>
 </head>
@@ -131,7 +144,7 @@
   <section id="web" class="active">
     <p class="lead">一般情報系のWebアプリです。iPadのブラウザで動き、個人情報は入力・保存しません。</p>
     <div id="web-groups"></div>
-    <div class="note">検査の補助アプリは、療法士が行う検査の<b>計測・集計・計算・記録の補助</b>に限ります。診断機能は持たず、臨床判断は療法士が行います。検査の問題文や図版などの著作物は掲載していません。</div>
+    <div class="note">検査の補助アプリは、療法士が行う検査の<b>計測・集計・計算・記録の補助</b>に限ります。診断機能は持たず、臨床判断は療法士が行います。著作権のある検査の問題文や図版は掲載していません。</div>
   </section>
 
   <!-- ② PCプログラム -->
@@ -269,6 +282,45 @@
       <li><span class="num">3</span><span>WebアプリはGitHub Pagesで公開し、iPadのブラウザで使います。PCで使うプログラムはUSBメモリで運び、最初から入っているExcelとWindowsの機能で動かします。</span></li>
       <li><span class="num">4</span><span>患者データは電子カルテPCの中だけで扱い、外部には出しません。</span></li>
     </ol>
+
+    <h2><span class="dot" style="background:var(--c-ippan)"></span>GitHub・GASとは</h2>
+    <div class="sys">
+      <div class="sysbox" style="--c:var(--c-ippan)">
+        <h3>GitHub（ギットハブ）</h3>
+        <ul>
+          <li>プログラムのファイルを保管・公開できるWebサービスです。世界中の開発者や企業が使っています。</li>
+          <li>その中の「GitHub Pages」という機能を使うと、置いたファイルがWebページとして公開され、URLを開くだけで使えます。</li>
+          <li>WebアプリはすべてGitHub Pagesで公開しています。</li>
+        </ul>
+      </div>
+      <div class="sysbox" style="--c:var(--c-sonota)">
+        <h3>GAS（Google Apps Script）</h3>
+        <ul>
+          <li>Googleのスプレッドシートなどを自動で動かせる、Googleのプログラムのしくみです。ExcelのマクロのGoogle版のようなものです。</li>
+          <li>休日勤務の希望収集でだけ使い、入力された希望をスプレッドシートに集めています。</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2><span class="dot" style="background:var(--accent)"></span>アプリの作り方</h2>
+    <ol class="steps">
+      <li><span class="num">1</span><span><b>困りごとを整理する：</b>「何を・どの順番で・どう表示したいか」を書き出します。</span></li>
+      <li><span class="num">2</span><span><b>生成AIと一緒に作る：</b>やりたいことを文章で説明し、プログラムを作ってもらいます。実際の患者情報や業務データは入力しません。</span></li>
+      <li><span class="num">3</span><span><b>動かして直す：</b>自分で動かして確かめ、使いにくいところを生成AIに伝えて直します。現場の職員が作るので、すぐに調整しやすくなります。</span></li>
+      <li><span class="num">4</span><span><b>公開する：</b>できたファイルをGitHubに置くと、決まったURLで開けるようになります。</span></li>
+      <li><span class="num">5</span><span><b>使う：</b>iPadでURLを開き、ホーム画面に追加すると、アプリのように使えます。</span></li>
+    </ol>
+
+    <div class="warn">
+      <b class="t">使うときの注意点</b>
+      <ul>
+        <li>データは端末内だけ：記録はそのiPadのブラウザの中にだけ残ります。ブラウザのデータを消すと記録も消え、別のiPadとは共有されません。</li>
+        <li>個人情報は入力しない：患者氏名・患者ID・生年月日などは入力しません。</li>
+        <li>公開URLはだれでも開けるため、院内の情報や個人情報はアプリに載せません。</li>
+        <li>検査の補助アプリは、計測・集計・計算・記録の補助です。診断はせず、臨床判断は療法士が行います。</li>
+        <li>著作権のある検査の問題文や図版は、アプリに載せません。</li>
+      </ul>
+    </div>
   </section>
 
   <div class="modal" id="modal" role="dialog" aria-modal="true">
@@ -316,7 +368,7 @@ const WEB_APPS = [
     { name: "メンタルローテーション", desc: "図形の心的回転の訓練", url: "https://cityhospitalreha.github.io/mentalrotation/" },
   ]},
   { group: "自主トレ", color: "--c-jishu", items: [
-    { name: "自主トレメニュー", desc: "PT/OT向けの自主トレーニング。動画つきの運動カード", url: "https://cityhospitalreha.github.io/PT/" },
+    { name: "自主トレメニュー（作成中）", desc: "PT/OT向けの自主トレーニング。動画つきの運動カード", url: "https://cityhospitalreha.github.io/PT/" },
   ]},
   { group: "その他", color: "--c-sonota", items: [
     { name: "モザイクスタンプ",   desc: "モザイクをかけたまま撮影できるので、個人情報がそもそも写らない。もし写り込んでも、保存する前にモザイクを編集できる", url: "https://cityhospitalreha.github.io/camera/" },
