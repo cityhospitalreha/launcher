@@ -319,7 +319,7 @@ const WEB_APPS = [
     { name: "自主トレメニュー", desc: "PT/OT向けの自主トレーニング。動画つきの運動カード", url: "https://cityhospitalreha.github.io/PT/" },
   ]},
   { group: "その他", color: "--c-sonota", items: [
-    { name: "モザイクスタンプ",   desc: "撮影前にモザイクをかけ、加工前の画像を残さない", url: "https://cityhospitalreha.github.io/camera/" },
+    { name: "モザイクスタンプ",   desc: "そもそも顔や名札が写らないように撮影し、写り込む部分は撮影前にカメラの画面上でモザイク。保存されるのはモザイク済みの画像だけ", url: "https://cityhospitalreha.github.io/camera/" },
     { name: "休日勤務 希望収集",  desc: "希望を集め、公平に配慮して自動で割り当て", url: "https://cityhospitalreha.github.io/shift-/", photo: "shift.png" },
   ]},
 ];
@@ -334,7 +334,7 @@ const PC_PROGRAMS = [
     { name: "リハ統計マクロ（例：3日以内介入率）", img: "stats", photo: "stats.png",
       desc: "電子カルテから出力したCSVをマクロが自動で読み込み、脳梗塞患者の3日以内介入率を計算。ほかにも月次統計用のマクロを複数作成",
       before: "入院日と初回評価日を1件ずつ見比べて日数を数え、手作業で介入率を計算していた。PT・OT・STで重複する患者の整理にも手間がかかっていた。",
-      after: "出力したCSVをマクロが自動で読み込むので、貼り付けの手間がない。対象月の患者を抜き出し、職種の重複を整理して介入率を計算する。入院日・初回評価日の入力漏れは「要確認」リストに自動で出る。このほかにも、月次の単位数集計や委員会資料の作成などのマクロを作成している。",
+      after: "出力したCSVをマクロが自動で読み込むので、貼り付けの手間がない。対象月の患者を抜き出し、職種の重複を整理して介入率を計算する。入院日・初回評価日の入力漏れは「要確認」リストに自動で出る。このほかにも、月次の単位数集計などのマクロを作成している。",
       how: "電子カルテPCのExcel上で動くVBA。結果は同じファイルの「介入率結果」シートに出力し、外部には出さない。" },
   ]},
   { group: "電子カルテPC（PowerShell）", color: "--c-denkaru", items: [
@@ -430,7 +430,7 @@ const MOCKS = {
       <text x="276" y="120">OT 単位数</text><text x="392" y="120" text-anchor="end">987</text>
       <text x="276" y="144">ST 単位数</text><text x="392" y="144" text-anchor="end">654</text>
       <text x="276" y="168">3日以内介入率</text><text x="392" y="168" text-anchor="end">90%</text>
-      <text x="276" y="192">委員会資料</text><text x="392" y="192" text-anchor="end" fill="#2c7a4b" font-weight="700">作成済</text>
+      <text x="276" y="192">新規処方数</text><text x="392" y="192" text-anchor="end">244</text>
     </g>
   </svg>`,
   template: `<svg viewBox="0 0 420 250" ${F}>
