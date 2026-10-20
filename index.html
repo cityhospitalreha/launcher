@@ -149,6 +149,10 @@
     border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
   .warn b.t { display: block; color: #8a5a1c; margin-bottom: 4px; }
   @media (max-width: 760px) { .sys { grid-template-columns: 1fr; } }
+  .point { background: #eef7f1; border: 1px solid #c7e3d1; border-left: 5px solid var(--c-kunren);
+    border-radius: 12px; padding: 12px 16px; margin: 0 0 6px; }
+  .point b.t { display: block; color: #2d6b44; font-size: 16px; margin-bottom: 4px; }
+  .point ul { margin: 0; padding-left: 1.2em; font-size: 14.5px; line-height: 1.7; }
   footer { color: var(--sub); font-size: 13px; text-align: center; margin-top: 28px; line-height: 1.6; }
 </style>
 </head>
@@ -157,7 +161,6 @@
 
   <header>
     <h1>リハビリテーション科 業務改善ツール</h1>
-    <p>生成AIを開発支援に使い、現場の職員が作成したツールの一覧です。カードをタップすると開きます。</p>
   </header>
 
   <nav class="tabs" role="tablist">
@@ -167,7 +170,7 @@
     <span class="tarrow" aria-hidden="true">›</span>
     <button class="tab" role="tab" data-tab="flow" aria-selected="false"><span class="tnum">3</span>作成・導入の流れ</button>
   </nav>
-  <p class="tabhint" id="tabhint">👆 上のボタンを押すと、ほかのページに切り替わります（全3ページ）</p>
+  <p class="tabhint" id="tabhint">上のボタンでページを切り替えられます（全3ページ）</p>
 
   <!-- ① Webアプリ -->
   <section id="web" class="active">
@@ -180,12 +183,117 @@
   <section id="pc">
     <p class="lead">Excel VBAとPowerShellで作ったプログラムです。どちらもWindowsとExcelに最初から入っている機能で動き、新しいソフトのインストールは不要です。カードをタップすると、イメージ図と説明が大きく開きます。</p>
 
-    <h2><span class="dot" style="background:var(--c-denkaru)"></span>作成から利用までの流れ</h2>
+    <div id="pc-groups"></div>
+    <p class="sample">※ 図の数値・文言は説明用のサンプル、または個人情報を含まない画面です。</p>
+    <div class="note">電子カルテPCで使うプログラムは、USBメモリで運んで使います。患者データは電子カルテPCの中だけで扱い、外部には出しません。</div>
+  </section>
+
+  <!-- ③ 流れ -->
+  <section id="flow">
+    <div class="point">
+      <b class="t">データの流れ</b>
+      <ul>
+        <li>生成AIはプログラム作成の支援にのみ使用し、院内のデータは入力しません。</li>
+        <li>データの流れは一方向です。インターネット側から院内側へ渡すのは、プログラムのファイルのみです。</li>
+        <li>iPadおよび電子カルテPCで入力した記録・患者データが、外部へ送信されることはありません。</li>
+        <li>休日勤務の希望収集（GAS）のみ、職員の勤務希望をGoogleスプレッドシートに集約します。患者情報は扱いません。</li>
+      </ul>
+    </div>
+    <h2><span class="dot" style="background:var(--accent)"></span>Webアプリ（iPad）のしくみ</h2>
     <div class="flow">
-      <svg viewBox="0 0 1100 300" role="img" aria-label="PCで使うプログラムの作成から利用までの流れ">
+      <svg viewBox="0 0 1100 500" role="img" aria-label="Webアプリの作成から利用までのしくみ">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5f6b7a"/>
+          </marker>
+          <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#7a5ea8"/>
+          </marker>
+          <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#c9a0a2"/>
+          </marker>
+        </defs>
+        <style>
+          .b3 { fill: #fff; stroke: #c9d2dc; stroke-width: 2; }
+          .h3t { font: 700 18px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #1f2933; }
+          .s3t { font: 14px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #5f6b7a; }
+          .l3 { stroke: #5f6b7a; stroke-width: 2.5; fill: none; marker-end: url(#ar3); }
+          .l4 { stroke: #7a5ea8; stroke-width: 2.5; fill: none; stroke-dasharray: 6 5; marker-end: url(#ar4); }
+          .z3 { fill: #edf4f6; stroke: #4b7f8c; stroke-width: 2; stroke-dasharray: 8 6; }
+          .z4 { fill: #eaf2f8; stroke: #2f6f9f; stroke-width: 2; stroke-dasharray: 8 6; }
+          .g1 { fill: #f4f0fa; stroke: #7a5ea8; stroke-width: 2; }
+          .zl3 { font: 700 14px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; }
+          .nb { stroke: #c9a0a2; stroke-width: 2.5; fill: none; stroke-dasharray: 6 5; }
+          .nx { font: 700 26px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #a3474b; }
+          .nh { font: 700 16px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #a3474b; }
+          .nbox { fill: #fbeeee; stroke: #e2b9bb; stroke-width: 1.5; }
+          .gh { font: 700 17px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #7a5ea8; }
+        </style>
+        <!-- GAS：休日勤務の希望収集のみ（iPadの枠の上） -->
+        <rect class="g1" x="650" y="6" width="440" height="100" rx="14"/>
+        <text class="gh" x="870" y="36" text-anchor="middle">例外：休日勤務の希望収集のみ（GAS）</text>
+        <text class="s3t" x="870" y="64" text-anchor="middle">入力した勤務希望をGoogleスプレッドシートに集約</text>
+        <text class="s3t" x="870" y="86" text-anchor="middle">患者情報は扱いません</text>
+        <path class="l4" d="M870,138 L870,110"/>
+
+        <g transform="translate(0,120)">
+        <rect class="z3" x="10" y="20" width="420" height="230" rx="16"/>
+        <text class="zl3" x="220" y="44" text-anchor="middle" fill="#4b7f8c">インターネットにつながるPC（患者データなし）</text>
+        <rect class="z4" x="650" y="20" width="440" height="230" rx="16"/>
+        <text class="zl3" x="870" y="44" text-anchor="middle" fill="#2f6f9f">iPadのブラウザ（個人情報は入力しない）</text>
+
+        <rect class="b3" x="25" y="70" width="185" height="150" rx="14"/>
+        <text class="h3t" x="117" y="112" text-anchor="middle">① 作る</text>
+        <text class="s3t" x="117" y="140" text-anchor="middle">生成AIと対話して</text>
+        <text class="s3t" x="117" y="160" text-anchor="middle">プログラムを作成</text>
+        <text class="s3t" x="117" y="190" text-anchor="middle">処理内容の説明だけ</text>
+        <text class="s3t" x="117" y="208" text-anchor="middle">（データは使わない）</text>
+
+        <rect class="b3" x="232" y="70" width="185" height="150" rx="14"/>
+        <text class="h3t" x="324" y="112" text-anchor="middle">② 確認する</text>
+        <text class="s3t" x="324" y="140" text-anchor="middle">個人情報を</text>
+        <text class="s3t" x="324" y="160" text-anchor="middle">入力・保存しない</text>
+        <text class="s3t" x="324" y="190" text-anchor="middle">作りになっているか</text>
+        <path class="l3" d="M210,145 L228,145"/>
+
+        <rect class="b3" x="455" y="90" width="165" height="110" rx="14"/>
+        <text class="h3t" x="537" y="132" text-anchor="middle">③ 公開</text>
+        <text class="s3t" x="537" y="160" text-anchor="middle">GitHub Pagesに</text>
+        <text class="s3t" x="537" y="180" text-anchor="middle">ファイルを置く</text>
+        <path class="l3" d="M417,145 L451,145"/>
+
+        <rect class="b3" x="665" y="70" width="195" height="150" rx="14"/>
+        <text class="h3t" x="762" y="112" text-anchor="middle">④ 開く</text>
+        <text class="s3t" x="762" y="140" text-anchor="middle">URLを開いて</text>
+        <text class="s3t" x="762" y="160" text-anchor="middle">ホーム画面に追加</text>
+        <text class="s3t" x="762" y="190" text-anchor="middle">インストール不要</text>
+        <path class="l3" d="M620,145 L661,145"/>
+
+        <rect class="b3" x="880" y="70" width="195" height="150" rx="14"/>
+        <text class="h3t" x="977" y="112" text-anchor="middle">⑤ 使う</text>
+        <text class="s3t" x="977" y="140" text-anchor="middle">記録はそのiPadの</text>
+        <text class="s3t" x="977" y="160" text-anchor="middle">中だけに残る</text>
+        <text class="s3t" x="977" y="190" text-anchor="middle">外部には送らない</text>
+        <path class="l3" d="M860,145 L876,145"/>
+
+        <!-- 逆向きはない -->
+        <path class="nb" d="M690,252 C620,276 520,276 440,262" marker-end="url(#ar5)"/>
+        <text class="nx" x="555" y="282" text-anchor="middle">✕</text>
+        <rect class="nbox" x="355" y="292" width="400" height="80" rx="12"/>
+        <text class="nh" x="555" y="320" text-anchor="middle">逆方向の流れはありません</text>
+        <text class="s3t" x="555" y="348" text-anchor="middle">iPadの記録が生成AIやGitHubに送られることはありません</text>
+        </g>
+      </svg>
+    </div>
+    <h2><span class="dot" style="background:var(--c-denkaru)"></span>PCで使うプログラムのしくみ</h2>
+    <div class="flow">
+      <svg viewBox="0 0 1100 385" role="img" aria-label="PCで使うプログラムの作成から利用までの流れ">
         <defs>
           <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
             <path d="M0,0 L10,5 L0,10 z" fill="#5f6b7a"/>
+          </marker>
+          <marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#c9a0a2"/>
           </marker>
         </defs>
         <style>
@@ -196,6 +304,10 @@
           .z2 { fill: #fbeeee; stroke: #a3474b; stroke-width: 2; stroke-dasharray: 8 6; }
           .z1 { fill: #edf4f6; stroke: #4b7f8c; stroke-width: 2; stroke-dasharray: 8 6; }
           .zl { font: 700 14px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; }
+          .nb2 { stroke: #c9a0a2; stroke-width: 2.5; fill: none; stroke-dasharray: 6 5; }
+          .nx2 { font: 700 26px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #a3474b; }
+          .nh2 { font: 700 16px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #a3474b; }
+          .nbox2 { fill: #fbeeee; stroke: #e2b9bb; stroke-width: 1.5; }
         </style>
         <rect class="z1" x="10" y="20" width="420" height="230" rx="16"/>
         <text class="zl" x="220" y="44" text-anchor="middle" fill="#4b7f8c">インターネットにつながるPC（患者データなし）</text>
@@ -237,117 +349,35 @@
         <text class="s2t" x="977" y="190" text-anchor="middle">外部には出さない</text>
         <path class="l2" d="M860,145 L876,145"/>
 
+        <!-- 逆向きはない -->
+        <path class="nb2" d="M690,252 C620,276 520,276 440,262" marker-end="url(#ar6)"/>
+        <text class="nx2" x="555" y="282" text-anchor="middle">✕</text>
+        <rect class="nbox2" x="355" y="292" width="400" height="80" rx="12"/>
+        <text class="nh2" x="555" y="320" text-anchor="middle">逆方向の流れはありません</text>
+        <text class="s2t" x="555" y="348" text-anchor="middle">患者データを電子カルテPCから持ち出すことはありません</text>
+
       </svg>
     </div>
 
-    <div id="pc-groups"></div>
-    <p class="sample">※ 図の数値・文言は説明用のサンプル、または個人情報を含まない画面です。</p>
-    <div class="note">電子カルテPCで使うプログラムは、USBメモリで運んで使います。患者データは電子カルテPCの中だけで扱い、外部には出しません。</div>
-  </section>
-
-  <!-- ③ 流れ -->
-  <section id="flow">
-    <p class="lead">生成AIは「プログラムを作る手伝い」にだけ使います。院内のデータはAIに入力しません。</p>
-    <div class="flow">
-      <svg viewBox="0 0 1100 430" role="img" aria-label="作成・導入の流れの図">
-        <defs>
-          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-            <path d="M0,0 L10,5 L0,10 z" fill="#5f6b7a"/>
-          </marker>
-        </defs>
-        <style>
-          .bx { fill: #fff; stroke: #c9d2dc; stroke-width: 2; rx: 14; }
-          .t1 { font: 700 20px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #1f2933; }
-          .t2 { font: 15px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #5f6b7a; }
-          .ln { stroke: #5f6b7a; stroke-width: 2.5; fill: none; marker-end: url(#ar); }
-          .zone { fill: #fbeeee; stroke: #a3474b; stroke-width: 2; stroke-dasharray: 8 6; rx: 16; }
-          .zt { font: 700 15px -apple-system, "Hiragino Sans", "Meiryo", sans-serif; fill: #a3474b; }
-        </style>
-
-        <!-- 1 作る -->
-        <rect class="bx" x="20" y="150" width="220" height="120"/>
-        <text class="t1" x="130" y="198" text-anchor="middle">① プログラムを作る</text>
-        <text class="t2" x="130" y="226" text-anchor="middle">生成AIは作成の手伝いだけ</text>
-        <text class="t2" x="130" y="248" text-anchor="middle">院内データは入力しない</text>
-
-        <!-- 2 確認 -->
-        <rect class="bx" x="300" y="150" width="220" height="120"/>
-        <text class="t1" x="410" y="198" text-anchor="middle">② 中身を確認</text>
-        <text class="t2" x="410" y="226" text-anchor="middle">個人情報が入っていない</text>
-        <text class="t2" x="410" y="248" text-anchor="middle">外部と通信しない</text>
-        <path class="ln" d="M240,210 L296,210"/>
-
-        <!-- 3a Web -->
-        <rect class="bx" x="590" y="30" width="230" height="110"/>
-        <text class="t1" x="705" y="74" text-anchor="middle">③ GitHub Pagesで公開</text>
-        <text class="t2" x="705" y="102" text-anchor="middle">Webアプリ</text>
-        <text class="t2" x="705" y="122" text-anchor="middle">（個人情報を扱わない）</text>
-        <path class="ln" d="M520,190 C555,190 555,85 586,85"/>
-        <rect class="bx" x="870" y="30" width="210" height="110"/>
-        <text class="t1" x="975" y="80" text-anchor="middle">iPadのブラウザ</text>
-        <text class="t2" x="975" y="108" text-anchor="middle">で使う</text>
-        <path class="ln" d="M820,85 L866,85"/>
-
-        <!-- 3b USB -->
-        <rect class="bx" x="590" y="250" width="230" height="110"/>
-        <text class="t1" x="705" y="294" text-anchor="middle">③ USBメモリで運ぶ</text>
-        <text class="t2" x="705" y="322" text-anchor="middle">Excel VBA・PowerShell</text>
-        <text class="t2" x="705" y="342" text-anchor="middle">インストール不要</text>
-        <path class="ln" d="M520,230 C555,230 555,305 586,305"/>
-
-        <!-- 電カルゾーン -->
-        <rect class="zone" x="855" y="215" width="235" height="200"/>
-        <text class="zt" x="972" y="242" text-anchor="middle">電子カルテPCの中だけ</text>
-        <rect class="bx" x="875" y="255" width="195" height="105"/>
-        <text class="t1" x="972" y="298" text-anchor="middle">④ 患者データを</text>
-        <text class="t1" x="972" y="326" text-anchor="middle">ここで処理</text>
-        <text class="t2" x="972" y="392" text-anchor="middle">外部には出さない</text>
-        <path class="ln" d="M820,305 L871,305"/>
-      </svg>
-    </div>
-    <ol class="steps">
-      <li><span class="num">1</span><span>生成AIは、プログラムの設計・作成の手伝いにだけ使います。患者情報や業務データそのものは入力せず、処理内容の説明だけで作ります。</span></li>
-      <li><span class="num">2</span><span>できあがったプログラムに個人情報が入っていないこと、外部と通信する処理がないことを確認します。</span></li>
-      <li><span class="num">3</span><span>WebアプリはGitHub Pagesで公開し、iPadのブラウザで使います。PCで使うプログラムはUSBメモリで運び、最初から入っているExcelとWindowsの機能で動かします。</span></li>
-      <li><span class="num">4</span><span>患者データは電子カルテPCの中だけで扱い、外部には出しません。</span></li>
-    </ol>
-
-    <h2><span class="dot" style="background:var(--c-ippan)"></span>GitHub・GASとは</h2>
+    <h2><span class="dot" style="background:var(--c-ippan)"></span>用語</h2>
     <div class="sys">
       <div class="sysbox" style="--c:var(--c-ippan)">
-        <h3>GitHub（ギットハブ）</h3>
-        <ul>
-          <li>プログラムのファイルを保管・公開できるWebサービスです。世界中の開発者や企業が使っています。</li>
-          <li>その中の「GitHub Pages」という機能を使うと、置いたファイルがWebページとして公開され、URLを開くだけで使えます。</li>
-          <li>WebアプリはすべてGitHub Pagesで公開しています。</li>
-        </ul>
+        <h3>GitHub Pages（ギットハブ ページズ）</h3>
+        <ul><li>置いたファイルがそのままWebページになるサービス。URLを開くだけで使えます。</li></ul>
       </div>
       <div class="sysbox" style="--c:var(--c-sonota)">
         <h3>GAS（Google Apps Script）</h3>
-        <ul>
-          <li>Googleのスプレッドシートなどを自動で動かせる、Googleのプログラムのしくみです。ExcelのマクロのGoogle版のようなものです。</li>
-          <li>休日勤務の希望収集でだけ使い、入力された希望をスプレッドシートに集めています。</li>
-        </ul>
+        <ul><li>Googleスプレッドシートを自動で動かすしくみ（ExcelマクロのGoogle版）。休日勤務の希望収集だけで使います。</li></ul>
       </div>
     </div>
-
-    <h2><span class="dot" style="background:var(--accent)"></span>アプリの作り方</h2>
-    <ol class="steps">
-      <li><span class="num">1</span><span><b>困りごとを整理する：</b>「何を・どの順番で・どう表示したいか」を書き出します。</span></li>
-      <li><span class="num">2</span><span><b>生成AIと一緒に作る：</b>やりたいことを文章で説明し、プログラムを作ってもらいます。実際の患者情報や業務データは入力しません。</span></li>
-      <li><span class="num">3</span><span><b>動かして直す：</b>自分で動かして確かめ、使いにくいところを生成AIに伝えて直します。現場の職員が作るので、すぐに調整しやすくなります。</span></li>
-      <li><span class="num">4</span><span><b>公開する：</b>できたファイルをGitHubに置くと、決まったURLで開けるようになります。</span></li>
-      <li><span class="num">5</span><span><b>使う：</b>iPadでURLを開き、ホーム画面に追加すると、アプリのように使えます。</span></li>
-    </ol>
 
     <div class="warn">
       <b class="t">使うときの注意点</b>
       <ul>
-        <li>データは端末内だけ：記録はそのiPadのブラウザの中にだけ残ります。ブラウザのデータを消すと記録も消え、別のiPadとは共有されません。</li>
-        <li>個人情報は入力しない：患者氏名・患者ID・生年月日などは入力しません。</li>
-        <li>公開URLはだれでも開けるため、院内の情報や個人情報はアプリに載せません。</li>
-        <li>検査の補助アプリは、計測・集計・計算・記録の補助です。診断はせず、臨床判断は療法士が行います。</li>
-        <li>著作権のある検査の問題文や図版は、アプリに載せません。</li>
+        <li>患者氏名・患者ID・生年月日などの個人情報は入力しません。</li>
+        <li>iPadの記録はその端末のブラウザの中だけ。ブラウザのデータを消すと記録も消えます。</li>
+        <li>検査の補助アプリは計測・集計・記録の補助です。診断はせず、臨床判断は療法士が行います。</li>
+        <li>著作権のある検査の問題文や図版は載せません。</li>
       </ul>
     </div>
   </section>
