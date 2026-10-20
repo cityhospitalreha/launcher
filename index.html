@@ -38,6 +38,32 @@
   .tab { flex: 1; border: 1px solid var(--line); background: var(--card); color: var(--ink);
     font-size: 17px; font-weight: 600; padding: 14px 10px; border-radius: 12px; cursor: pointer; }
   .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  /* 押していないタブも「押せる」と分かるように：影と色付きの文字 */
+  .tab[aria-selected="false"] { box-shadow: 0 2px 0 var(--line); color: var(--accent); }
+  .tab:active { transform: translateY(1px); box-shadow: none; }
+  /* タブの番号の丸 */
+  .tnum { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+    border-radius: 50%; font-size: 14px; margin-right: 6px; vertical-align: 1px;
+    background: var(--accent); color: #fff; }
+  .tab[aria-selected="true"] .tnum { background: #fff; color: var(--accent); }
+  /* タブとタブの間の矢印 */
+  .tarrow { align-self: center; color: #9aa5b1; font-size: 22px; font-weight: 700; flex: 0 0 auto; }
+  /* 「ほかのページもあります」の案内 */
+  .tabhint { margin: -10px 4px 14px; font-size: 14px; color: var(--accent); font-weight: 600;
+    animation: hintpulse 1.6s ease-in-out infinite; }
+  .tabhint.hide { display: none; }
+  @keyframes hintpulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+  /* ページ下の「次へ」ボタン */
+  .nextnav { margin-top: 26px; display: flex; justify-content: flex-end; }
+  .nextbtn { border: none; background: var(--accent); color: #fff; font-size: 17px; font-weight: 700;
+    padding: 16px 22px; border-radius: 14px; cursor: pointer; font-family: inherit; text-align: left;
+    box-shadow: 0 3px 0 rgba(0,0,0,.15); }
+  .nextbtn small { display: block; font-size: 12px; font-weight: 600; opacity: .85; margin-bottom: 2px; }
+  .nextbtn.back { background: var(--card); color: var(--accent); border: 1px solid var(--line); box-shadow: none; }
+  .nextbtn:active { transform: translateY(2px); box-shadow: none; }
+  @media (max-width: 600px) { .tab { font-size: 14px; padding: 10px 4px; } .tarrow { font-size: 16px; }
+    .tnum { display: flex; margin: 0 auto 4px; }
+    .nextnav { justify-content: stretch; } .nextbtn { width: 100%; } }
 
   section { display: none; }
   section.active { display: block; }
@@ -135,10 +161,13 @@
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="web" aria-selected="true">Webアプリ（iPad）</button>
-    <button class="tab" role="tab" data-tab="pc" aria-selected="false">PCで使うプログラム</button>
-    <button class="tab" role="tab" data-tab="flow" aria-selected="false">作成・導入の流れ</button>
+    <button class="tab" role="tab" data-tab="web" aria-selected="true"><span class="tnum">1</span>Webアプリ（iPad）</button>
+    <span class="tarrow" aria-hidden="true">›</span>
+    <button class="tab" role="tab" data-tab="pc" aria-selected="false"><span class="tnum">2</span>PCで使うプログラム</button>
+    <span class="tarrow" aria-hidden="true">›</span>
+    <button class="tab" role="tab" data-tab="flow" aria-selected="false"><span class="tnum">3</span>作成・導入の流れ</button>
   </nav>
+  <p class="tabhint" id="tabhint">👆 上のボタンを押すと、ほかのページに切り替わります（全3ページ）</p>
 
   <!-- ① Webアプリ -->
   <section id="web" class="active">
@@ -594,12 +623,44 @@ modal.addEventListener("click", e => { if (e.target === modal) modal.classList.r
 
 renderPC(PC_PROGRAMS);
 
+/* ===== タブの切り替え ===== */
+// ページの順番（ここを並べ替えると「次へ」の行き先も変わる）
+const PAGES = [
+  { id: "web",  name: "Webアプリ（iPad）" },
+  { id: "pc",   name: "PCで使うプログラム" },
+  { id: "flow", name: "作成・導入の流れ" },
+];
+
+function showTab(id) {
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === id));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  // 一度でもページを切り替えたら、案内の文は消す
+  document.getElementById("tabhint").classList.add("hide");
+}
+
 document.querySelectorAll(".tab").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b === btn));
-    document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === btn.dataset.tab));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  btn.addEventListener("click", () => showTab(btn.dataset.tab));
+});
+
+// 各ページの一番下に「次へ」ボタンを付ける（最後のページは「最初に戻る」）
+PAGES.forEach((p, i) => {
+  const sec = document.getElementById(p.id);
+  const nav = document.createElement("div");
+  nav.className = "nextnav";
+  const btn = document.createElement("button");
+  if (i < PAGES.length - 1) {
+    const next = PAGES[i + 1];
+    btn.className = "nextbtn";
+    btn.innerHTML = `<small>次のページへ（${i + 2} / ${PAGES.length}）</small>${next.name} →`;
+    btn.addEventListener("click", () => showTab(next.id));
+  } else {
+    btn.className = "nextbtn back";
+    btn.innerHTML = `<small>最後のページです</small>← 1. ${PAGES[0].name} に戻る`;
+    btn.addEventListener("click", () => showTab(PAGES[0].id));
+  }
+  nav.appendChild(btn);
+  sec.appendChild(nav);
 });
 </script>
 </body>
