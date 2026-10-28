@@ -46,6 +46,22 @@
   h2 .dot { width: 12px; height: 12px; border-radius: 50%; }
   .lead { color: var(--sub); font-size: 15px; margin: 0 4px 12px; line-height: 1.6; }
 
+
+  /* 次のページへボタン */
+  .nextnav { margin: 28px 0 8px; text-align: center; }
+  .nextbtn { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+    background: var(--accent); color: #fff; border: 0; border-radius: 16px; padding: 18px 22px;
+    font: inherit; cursor: pointer; box-shadow: 0 4px 14px rgba(47,111,159,.25); }
+  .nextbtn:active { transform: scale(.99); }
+  .nextbtn .lbl { font-size: 14px; opacity: .9; }
+  .nextbtn .ttl { font-size: 21px; font-weight: 700; margin-top: 2px; }
+  .nextbtn .sub { font-size: 14px; opacity: .9; margin-top: 2px; }
+  .nextbtn .arrow { margin-left: auto; font-size: 34px; font-weight: 700; animation: nudge 1.4s ease-in-out infinite; }
+  .nextbtn.back { background: #fff; color: var(--accent); border: 2px solid var(--accent); box-shadow: none; }
+  @keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+  .pager { margin-top: 10px; color: var(--sub); font-size: 14px; }
+  .pager b { color: var(--accent); }
+
   /* カード */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
@@ -145,6 +161,14 @@
     <p class="lead">一般情報系のWebアプリです。iPadのブラウザで動き、個人情報は入力・保存しません。</p>
     <div id="web-groups"></div>
     <div class="note">検査の補助アプリは、療法士が行う検査の<b>計測・集計・計算・記録の補助</b>に限ります。診断機能は持たず、臨床判断は療法士が行います。著作権のある検査の問題文や図版は掲載していません。</div>
+
+    <div class="nextnav">
+      <button class="nextbtn" data-go="pc">
+        <span><div class="lbl">次のページ</div><div class="ttl">② PCで使うプログラム</div><div class="sub">超勤整理簿・統計マクロ・テンプレート帳など</div></span>
+        <span class="arrow">→</span>
+      </button>
+      <div class="pager">●○○　<b>1</b> / 3 ページ</div>
+    </div>
   </section>
 
   <!-- ② PCプログラム -->
@@ -214,6 +238,14 @@
     <div id="pc-groups"></div>
     <p class="sample">※ 図の数値・文言は説明用のサンプル、または個人情報を含まない画面です。</p>
     <div class="note">電子カルテPCで使うプログラムは、情報移行用USBで運んで使います。患者データは電子カルテPCの中だけで扱い、外部には出しません。</div>
+
+    <div class="nextnav">
+      <button class="nextbtn" data-go="flow">
+        <span><div class="lbl">次のページ</div><div class="ttl">③ 作成・導入の流れ</div><div class="sub">生成AIを使ったツールの作り方と、安全に使うためのしくみ</div></span>
+        <span class="arrow">→</span>
+      </button>
+      <div class="pager">○●○　<b>2</b> / 3 ページ</div>
+    </div>
   </section>
 
   <!-- ③ 流れ -->
@@ -350,6 +382,14 @@
         <li>情報移行用USBの取り扱い（ウイルスチェック等）は、院内のルールに従います。</li>
         <li>エクセルチャート（電子カルテから開くExcelファイル）に手を入れるときは、保守の担当に確認します。</li>
       </ul>
+    </div>
+
+    <div class="nextnav">
+      <button class="nextbtn back" data-go="web">
+        <span><div class="lbl">最初のページに戻る</div><div class="ttl">① Webアプリ（iPad）</div><div class="sub">ここまでで全3ページです</div></span>
+        <span class="arrow">↺</span>
+      </button>
+      <div class="pager">○○●　<b>3</b> / 3 ページ</div>
     </div>
   </section>
 
@@ -647,13 +687,13 @@ modal.addEventListener("click", e => { if (e.target === modal) modal.classList.r
 
 renderPC(PC_PROGRAMS);
 
-document.querySelectorAll(".tab").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b === btn));
-    document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === btn.dataset.tab));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-});
+function showTab(id) {
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === id));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.tab)));
+document.querySelectorAll(".nextbtn").forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.go)));
 </script>
 </body>
 </html>
